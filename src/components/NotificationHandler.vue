@@ -64,7 +64,7 @@ onMounted(() => {
       <div
         v-for="notification in notifications"
         :key="notification.id"
-        class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
+        class="card bg-base-200  hover:shadow-xl transition-shadow border border-gray-300/10"
       >
         <div class="card-body p-4">
           <div class="flex items-start justify-between">

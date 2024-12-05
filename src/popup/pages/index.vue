@@ -14,7 +14,7 @@ const activeTab = ref('handler')
         :class="{ 'tab-active': activeTab === 'handler' }"
         @click="activeTab = 'handler'"
       >
-        Handler
+        Notifications
       </a>
       <a 
         class="tab flex-1" 
