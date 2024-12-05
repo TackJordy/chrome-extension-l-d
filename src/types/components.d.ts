@@ -12,6 +12,7 @@ declare module 'vue' {
     'IHeroiconsOutline:menuAlt2': typeof import('~icons/heroicons-outline/menu-alt2')['default']
     IHeroiconsOutlineMenuAlt2: typeof import('~icons/heroicons-outline/menu-alt2')['default']
     Install: typeof import('./../components/install.vue')['default']
+    NotificationHandler: typeof import('./../components/NotificationHandler.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Update: typeof import('./../components/update.vue')['default']

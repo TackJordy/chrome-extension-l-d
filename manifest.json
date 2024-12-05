@@ -1,0 +1,21 @@
+{
+  "name": "My Extension",
+  "version": "1.0",
+  "description": "A simple Chrome extension",
+  "permissions": [
+    "tabs",
+    "action",
+    "notifications"
+  ],
+  "background": {
+    "service_worker": "background/badge.ts"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "assets/logo.svg",
+      "48": "assets/logo.svg",
+      "128": "assets/logo.svg"
+    }
+  }
+} 
