@@ -35,6 +35,10 @@ export interface Notification {
   read: boolean;
   user_id?: string;
   extra_data?: NotificationStats | NotificationChart;
+  action?: {
+    label: string;
+    url: string;
+  };
 }
 
 class SupabaseService {
@@ -81,7 +85,7 @@ class SupabaseService {
   }
 
   // Create a notification
-  async createNotification(notification: Pick<Notification, 'title' | 'message' | 'priority' | 'extra_data'>): Promise<Notification> {
+  async createNotification(notification: Pick<Notification, 'title' | 'message' | 'priority' | 'extra_data' | 'action'>): Promise<Notification> {
     try {
       const { data, error } = await this.supabase
         .from('notifications')

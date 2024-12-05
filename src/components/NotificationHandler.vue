@@ -95,24 +95,50 @@ onMounted(() => {
           </p>
 
           <!-- Rich Content -->
-          <div v-if="notification.extra_data">
+          <div v-if="notification.extra_data" class="mt-4">
             <NotificationContent :notification="notification" />
           </div>
 
-          <div class="flex justify-between items-center mt-2">
-            <span
-              class="badge badge-sm"
-              :class="{
-                'badge-error': notification.priority === 2,
-                'badge-warning': notification.priority === 1,
-                'badge-info': notification.priority === 0,
-              }"
+          <div class="flex justify-between items-center mt-4">
+            <div class="flex items-center gap-2">
+              <span
+                class="badge badge-sm"
+                :class="{
+                  'badge-error': notification.priority === 2,
+                  'badge-warning': notification.priority === 1,
+                  'badge-info': notification.priority === 0,
+                }"
+              >
+                Priority {{ notification.priority }}
+              </span>
+              <span class="text-xs text-base-content/50">
+                {{ new Date(notification.created_at).toLocaleString() }}
+              </span>
+            </div>
+            
+            <!-- Action Button -->
+            <a
+              v-if="notification.action"
+              :href="notification.action.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-primary btn-sm gap-2"
+              @click="markAsRead(notification.id)"
             >
-              Priority {{ notification.priority }}
-            </span>
-            <span class="text-xs text-base-content/50">
-              {{ new Date(notification.created_at).toLocaleString() }}
-            </span>
+              {{ notification.action.label }}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
