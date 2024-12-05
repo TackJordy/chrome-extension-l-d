@@ -3,7 +3,6 @@ import { useAppStore } from '@/stores/app.store'
 
 const store = useAppStore()
 
-const count = computed(() => store.count)
 </script>
 
 <template>
@@ -16,7 +15,6 @@ const count = computed(() => store.count)
 
   <RouterView />
 
-  <p>Count: {{ count }}</p>
 
   <footer
     aria-label="Site Footer"
