@@ -16,7 +16,6 @@ export const notificationService = {
       message,
       priority,
       requireInteraction: priority === 2,
-      buttons: [{ title: 'Keep it Flowing.' }],
     })
 
     return notificationId;

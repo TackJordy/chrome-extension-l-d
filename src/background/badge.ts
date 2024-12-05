@@ -74,10 +74,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
   }
 })
-
-// Set initial badge when extension is installed or updated
-chrome.runtime.onInstalled.addListener(() => {
-  console.log('extension installed, updating badge')
-  // Set an initial badge text to test if it's working
-  updateBadge({ text: '0' })
-})
