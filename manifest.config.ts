@@ -38,6 +38,16 @@ export default {
       matches: ['*://*/*'],
       run_at: 'document_end',
     },
+    // {
+    //   matches: ['*://*.agoda.com/*'],
+    //   js: ['src/content-scripts/agoda/index.ts'],
+    //   // css: [
+    //   //   'src/content-scripts/agoda/styles/comparison-panel.css',
+    //   //   'src/content-scripts/agoda/styles/metrics.css',
+    //   //   'src/content-scripts/agoda/styles/insights.css',
+    //   // ],
+    //   run_at: 'document_end',
+    // },
   ],
   // Full options page
   options_page: 'src/options/index.html',
@@ -49,7 +59,7 @@ export default {
   // host_permissions: [],
   permissions: ['storage', 'tabs', 'background', 'storage', 'notifications'],
   host_permissions: [
-    "https://your-api-endpoint/*"  // Replace with your actual API domain
+    'https://your-api-endpoint/*', // Replace with your actual API domain
   ],
   web_accessible_resources: [
     {
@@ -63,6 +73,10 @@ export default {
     {
       resources: ['src/assets/*'],
       matches: ['<all_urls>'],
+    },
+    {
+      resources: ['content-scripts/agoda/styles/*'],
+      matches: ['*://*.agoda.com/*'],
     },
   ],
   icons: {

@@ -1,0 +1,58 @@
+.comparison-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.metric:hover {
+  background: #f1f3f5;
+}
+
+.metric .label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.metric .value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Metric types */
+.metric.positive {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.metric.positive:hover {
+  background: #d8eee1;
+}
+
+.metric.negative {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.metric.negative:hover {
+  background: #f8dbd8;
+}
+
+.metric.neutral {
+  background: #f1f3f4;
+  color: #3c4043;
+}
+
+.metric.neutral:hover {
+  background: #e8eaed;
+}

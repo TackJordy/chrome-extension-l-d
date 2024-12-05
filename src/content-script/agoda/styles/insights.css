@@ -1,0 +1,53 @@
+.comparison-insights {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.insight {
+  font-size: 12px;
+  color: #666;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insight::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #1a73e8;
+  border-radius: 50%;
+}
+
+.insight:hover {
+  color: #1a73e8;
+}
+
+/* Animation for new insights */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insight {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Empty state */
+.comparison-insights:empty::after {
+  content: 'No insights available';
+  display: block;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 8px 0;
+}

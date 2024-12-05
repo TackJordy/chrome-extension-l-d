@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import NotificationHandler from '../../components/NotificationHandler.vue'
 import NotificationTester from '../../components/NotificationTester.vue'
-import { ref } from 'vue'
 
 const activeTab = ref('handler')
 </script>
@@ -9,15 +9,15 @@ const activeTab = ref('handler')
 <template>
   <div class="p-4">
     <div class="tabs tabs-boxed w-full mb-4">
-      <a 
-        class="tab flex-1" 
+      <a
+        class="tab flex-1"
         :class="{ 'tab-active': activeTab === 'handler' }"
         @click="activeTab = 'handler'"
       >
         Notifications
       </a>
-      <a 
-        class="tab flex-1" 
+      <a
+        class="tab flex-1"
         :class="{ 'tab-active': activeTab === 'tester' }"
         @click="activeTab = 'tester'"
       >

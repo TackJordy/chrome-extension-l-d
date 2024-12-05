@@ -1,0 +1,42 @@
+.hotel-comparison-panel {
+  position: absolute;
+  right: -320px;
+  top: 0;
+  width: 300px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.hotel-comparison-panel:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.comparison-header {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.comparison-header h4 {
+  margin: 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .hotel-comparison-panel {
+    position: relative;
+    right: 0;
+    width: 100%;
+    margin-top: 12px;
+  }
+}
