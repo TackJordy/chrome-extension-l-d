@@ -38,16 +38,12 @@ export default {
       matches: ['*://*/*'],
       run_at: 'document_end',
     },
-    // {
-    //   matches: ['*://*.agoda.com/*'],
-    //   js: ['src/content-scripts/agoda/index.ts'],
-    //   // css: [
-    //   //   'src/content-scripts/agoda/styles/comparison-panel.css',
-    //   //   'src/content-scripts/agoda/styles/metrics.css',
-    //   //   'src/content-scripts/agoda/styles/insights.css',
-    //   // ],
-    //   run_at: 'document_end',
-    // },
+    {
+      matches: ['*://*.agoda.com/*'],
+      js: ['src/content-script/agoda/index.ts'],
+      css: ['src/content-script/agoda/styles/comparison-panel.css'],
+      run_at: 'document_end',
+    },
   ],
   // Full options page
   options_page: 'src/options/index.html',
@@ -77,6 +73,13 @@ export default {
     {
       resources: ['content-scripts/agoda/styles/*'],
       matches: ['*://*.agoda.com/*'],
+    },
+    {
+      matches: ['*://*/*'],
+      resources: [
+        'src/content-script/agoda/iframe/index.html',
+        'src/content-script/agoda/styles/*',
+      ],
     },
   ],
   icons: {

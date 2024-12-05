@@ -17,7 +17,6 @@ export class AgodaEnhancer {
   private async init() {
     try {
       await this.loadYourHotelData()
-      this.initStyles()
       this.initObserver()
       // Initial scan for existing listings
       this.processNewListings()
@@ -36,25 +35,6 @@ export class AgodaEnhancer {
       reviewCount: 250,
       amenities: ['WiFi', 'Pool', 'Spa', 'Restaurant'],
     }
-  }
-
-  private initStyles() {
-    const styles = document.createElement('style')
-    styles.textContent = `
-      .hotel-comparison-panel {
-        position: absolute;
-        right: -320px;
-        top: 0;
-        width: 300px;
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 16px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        z-index: 1000;
-      }
-    `
-    document.head.appendChild(styles)
   }
 
   private initObserver() {
@@ -98,6 +78,6 @@ export class AgodaEnhancer {
     const comparison = Comparator.compare(this.yourHotelData, listingData)
     const panel = ComparisonPanel.create(comparison, this.yourHotelData)
 
-    listing.insertAdjacentElement('beforeend', panel)
+    listing.appendChild(panel)
   }
 }

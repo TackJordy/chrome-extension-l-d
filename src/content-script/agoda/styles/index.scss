@@ -1,21 +1,33 @@
-// src/content-script/agoda/styles/index.scss
+.crx-iframe {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  border: none;
+  background: transparent;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+
 .hotel-comparison-panel {
   position: absolute;
   right: -320px;
   top: 0;
   width: 300px;
+  height: 100%;
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   z-index: 1000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition: all 0.3s ease;
-
+  pointer-events: auto;
+  
+  transition: transform 0.3s ease;
+  
   &:hover {
     transform: translateX(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   }
 
   .comparison-metrics {
@@ -52,6 +64,16 @@
       font-size: 12px;
       color: #666;
       padding: 4px 0;
+    }
+  }
+}
+
+[data-selenium="hotel-item"] {
+  position: relative;
+  
+  &:hover {
+    .hotel-comparison-panel {
+      transform: translateX(-320px);
     }
   }
 }
