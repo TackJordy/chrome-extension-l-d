@@ -67,13 +67,3 @@
     }
   }
 }
-
-[data-selenium="hotel-item"] {
-  position: relative;
-  
-  &:hover {
-    .hotel-comparison-panel {
-      transform: translateX(-320px);
-    }
-  }
-}
