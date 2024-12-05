@@ -1,6 +1,6 @@
 import './index.scss'
 // src/content-script/agoda/index.ts
-import './agoda/styles/index.css'
+import './agoda/styles/index.scss'
 
 
 console.log('Content script initializing...')

@@ -59,16 +59,56 @@ export class AgodaEnhancer {
   }
 
   private processNewListings() {
-    console.log('Processing new listings...')
+    // Debug: Log all elements with data-selenium attribute
+    console.log(
+      'All data-selenium elements:',
+      Array.from(document.querySelectorAll('[data-selenium]')).map((el) => ({
+        attr: el.getAttribute('data-selenium'),
+        element: el,
+      }))
+    )
+
+    // Debug: Try different selector variations
+    const selectors = [
+      '[data-selenium="hotel-item"]',
+      'div[data-selenium="hotel-item"]',
+      '*[data-selenium="hotel-item"]',
+    ]
+
+    selectors.forEach((selector) => {
+      const elements = document.querySelectorAll(selector)
+      console.log(`Selector "${selector}" found:`, {
+        count: elements.length,
+        elements: Array.from(elements),
+      })
+    })
+
     const listings = document.querySelectorAll(AGODA_SELECTORS.hotelCard)
-    console.log(`Found ${listings.length} listings`)
+    console.log('Found listings:', {
+      selector: AGODA_SELECTORS.hotelCard,
+      count: listings.length,
+      listings: Array.from(listings),
+    })
 
     listings.forEach((listing) => {
       if (!listing.hasAttribute('data-enhanced')) {
+        console.log('Processing listing:', {
+          element: listing,
+          attributes: this.getElementAttributes(listing),
+          html: `${listing.outerHTML.substring(0, 200)}...`, // First 200 chars
+        })
         this.enhanceListingWithComparison(listing)
         listing.setAttribute('data-enhanced', 'true')
       }
     })
+  }
+
+  private getElementAttributes(element: Element): Record<string, string> {
+    const attrs: Record<string, string> = {}
+    Array.from(element.attributes).forEach((attr) => {
+      attrs[attr.name] = attr.value
+    })
+    return attrs
   }
 
   private enhanceListingWithComparison(listing: Element) {
