@@ -7,7 +7,7 @@ export class ComparisonPanel {
 
     panel.innerHTML = `
       <div class="comparison-header">
-        <h4>Compare with ${hotelData.name}</h4>
+        <h4>vs ${hotelData.name}</h4>
         <span class="badge">${hotelData.occupancy}% Occupancy</span>
       </div>
       
@@ -17,22 +17,22 @@ export class ComparisonPanel {
           value: comparison.price.formatted,
           type: comparison.price.difference < 0 ? 'positive' : 'negative',
           trend: comparison.price.difference < 0 ? 'down' : 'up',
-          subtext: `${Math.abs(comparison.price.difference).toFixed(2)} ${
-            comparison.price.difference < 0 ? 'cheaper' : 'more expensive'
-          }`
+          // subtext: `${Math.abs(comparison.price.difference).toFixed(2)} ${
+          //   comparison.price.difference < 0 ? 'cheaper' : 'more expensive'
+          // }`
         })}
         ${this.createMetric({
           label: 'Your Occupancy',
           value: `${hotelData.occupancy}%`,
           type: 'neutral',
-          subtext: 'Current occupancy rate'
+          // subtext: 'Current occupancy rate'
         })}
         ${this.createMetric({
           label: 'Rating Comparison',
           value: comparison.rating.formatted,
           type: comparison.rating.difference > 0 ? 'positive' : 'negative',
           trend: comparison.rating.difference > 0 ? 'up' : 'down',
-          subtext: `Your rating: ${hotelData.rating}/10`
+          // subtext: `Your rating: ${hotelData.rating}/10`
         })}
       </div>`
 
