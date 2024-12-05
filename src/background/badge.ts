@@ -1,3 +1,5 @@
+import { createPollingService } from '../services/pollingService'
+
 interface BadgeConfig {
   text: string
   backgroundColor?: string
@@ -13,7 +15,7 @@ const updateBadge = ({
   tabId,
 }: BadgeConfig) => {
   try {
-    // Set badge text (using Chrome's action API for Manifest V3)
+    // Set badge text
     if (typeof text === 'string') {
       chrome.action.setBadgeText({ text })
     }
@@ -28,49 +30,74 @@ const updateBadge = ({
       chrome.action.setBadgeTextColor({ color: textColor })
     }
 
-    console.log('badge updated with:', { text, backgroundColor, textColor })
+    console.log('Badge updated:', { text, backgroundColor, textColor })
   } catch (error) {
     console.error('Error updating badge:', error)
   }
 }
 
+// Handle badge updates
+const handleBadgeUpdate = (count: number) => {
+  const displayText = count > 99 ? '99+' : count.toString()
+  updateBadge({
+    text: count === 0 ? '' : displayText,
+    backgroundColor: '#FF0000',
+    textColor: '#FFFFFF',
+  })
+}
+
+// Handle errors
+const handleError = (error: Error) => {
+  console.error('Polling error:', error)
+  updateBadge({ text: '!' })
+}
+
+// Create polling service
+const pollingService = createPollingService(handleBadgeUpdate, handleError)
+
+// Start polling when the service worker starts
+pollingService.start()
+
 // Listen for messages from the content script or popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'UPDATE_BADGE') {
-    const { count } = message
+  switch (message.type) {
+    case 'UPDATE_BADGE':
+      const { count = 0 } = message
+      handleBadgeUpdate(count)
+      break
 
-    // If count is 0 or undefined, clear the badge
-    if (!count) {
-      updateBadge({ text: '' })
-      return
-    }
+    case 'CREATE_NOTIFICATION':
+      const { title, message: notificationMessage, priority = 1 } = message
+      if (chrome.notifications?.create) {
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: chrome.runtime.getURL('src/assets/logo.png'),
+          title,
+          message: notificationMessage,
+          priority,
+          requireInteraction: priority === 2,
+        })
+      }
+      break
 
-    // Format count for display (99+ for numbers greater than 99)
-    const displayText = count > 99 ? '99+' : count.toString()
+    case 'REFRESH_BADGE':
+      pollingService.refresh()
+      break
 
-    updateBadge({
-      text: displayText,
-      backgroundColor: '#FF0000', // Red background
-      textColor: '#FFFFFF', // White text
-    })
+    case 'START_POLLING':
+      pollingService.start()
+      break
+
+    case 'STOP_POLLING':
+      pollingService.stop()
+      break
   }
 
-  // Handle notification creation
-  if (message.type === 'CREATE_NOTIFICATION') {
-    const { title, message: notificationMessage, priority = 1 } = message
+  // Return true to indicate we will send a response asynchronously
+  return true
+})
 
-    // Check if the notifications API is available
-    if (chrome.notifications && chrome.notifications.create) {
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: chrome.runtime.getURL('assets/logo.svg'),
-        title,
-        message: notificationMessage,
-        priority,
-        requireInteraction: priority === 2,
-      })
-    } else {
-      console.error('Notifications API is not available.')
-    }
-  }
+// Clean up when the service worker is terminated
+self.addEventListener('unload', () => {
+  pollingService.stop()
 })

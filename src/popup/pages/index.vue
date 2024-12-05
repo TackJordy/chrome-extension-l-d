@@ -1,18 +1,40 @@
 <script setup lang="ts">
 import NotificationHandler from '../../components/NotificationHandler.vue'
-import { useAppStore } from '@/stores/app.store'
+import NotificationTester from '../../components/NotificationTester.vue'
+import { ref } from 'vue'
+
+const activeTab = ref('handler')
 </script>
 
 <template>
-  <div class="text-center m-4 flex flex-col gap-y-2">
-    <NotificationHandler />
+  <div class="p-4">
+    <div class="tabs tabs-boxed w-full mb-4">
+      <a 
+        class="tab flex-1" 
+        :class="{ 'tab-active': activeTab === 'handler' }"
+        @click="activeTab = 'handler'"
+      >
+        Handler
+      </a>
+      <a 
+        class="tab flex-1" 
+        :class="{ 'tab-active': activeTab === 'tester' }"
+        @click="activeTab = 'tester'"
+      >
+        Tester
+      </a>
+    </div>
+
+    <div>
+      <NotificationHandler v-if="activeTab === 'handler'" />
+      <NotificationTester v-if="activeTab === 'tester'" />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.btn {
-  @apply px-4 py-2 rounded-md bg-blue-500 text-white;
+:deep(.tab-content) {
+  min-width: 300px;
+  min-height: 200px;
 }
-
-
 </style>

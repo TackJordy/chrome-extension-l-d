@@ -48,6 +48,9 @@ export default {
   offline_enabled: true,
   // host_permissions: [],
   permissions: ['storage', 'tabs', 'background', 'storage', 'notifications'],
+  host_permissions: [
+    "https://your-api-endpoint/*"  // Replace with your actual API domain
+  ],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],
