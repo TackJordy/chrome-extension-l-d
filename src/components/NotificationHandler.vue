@@ -1,52 +1,46 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-import { useBadge } from '../composables/useBadge'
-import { useNotifications } from '../composables/useNotifications'
-import { useAppStore } from '../stores/app.store'
+import { onMounted, ref } from 'vue'
+import { apiService, type Notification } from '../services/apiService'
 
-const store = useAppStore()
-const { updateBadgeCount } = useBadge()
-const { showNotification } = useNotifications()
+const notifications = ref<Notification[]>([])
 
-// Update badge when notifications change
-watch(
-  () => store.count,
-  (newCount) => {
-    updateBadgeCount(newCount)
-  }
-)
-
-// Handle new notification
-const handleNewNotification = async (
-  title: string,
-  message: string,
-  priority: 0 | 1 | 2 = 1
-) => {
+// Fetch notifications
+const fetchNotifications = async () => {
   try {
-    await showNotification(title, message, priority)
-    await store.addNotification({ title, message, priority })
+    const response = await apiService.fetchUnreadNotifications()
+    notifications.value = response.notifications
+
+    // Update badge count
+    chrome.runtime.sendMessage({
+      type: 'UPDATE_BADGE',
+      count: response.unreadCount,
+    })
   } catch (error) {
-    console.error('Error creating notification:', error)
+    console.error('Error fetching notifications:', error)
   }
 }
 
-const addTestNotification = () => {
-  const timestamp = new Date().toLocaleTimeString()
-  handleNewNotification(
-    'Test Notification',
-    `This is a test notification created at ${timestamp}`,
-    1
-  )
-}
-
-// Handle notification clearing
-const clearNotification = async (id: string) => {
+// Mark notification as read
+const markAsRead = async (id: string) => {
   try {
-    store.removeNotification(id)
+    await apiService.markAsRead(id)
+    await fetchNotifications()
   } catch (error) {
-    console.error('Error clearing notification:', error)
+    console.error('Error marking notification as read:', error)
   }
 }
+
+// Initialize
+onMounted(() => {
+  // Initial fetch
+  fetchNotifications()
+
+  // Subscribe to real-time updates
+  apiService.subscribeToNotifications(() => {
+    console.log('Received real-time notification update')
+    fetchNotifications()
+  })
+})
 </script>
 
 <template>
@@ -55,39 +49,17 @@ const clearNotification = async (id: string) => {
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-primary">Notifications</h1>
       <div
-        v-if="store.count"
+        v-if="notifications.length"
         class="badge badge-primary badge-lg"
       >
-        {{ store.count }}
+        {{ notifications.length }}
       </div>
-    </div>
-
-    <!-- Add Notification Button -->
-    <div class="flex justify-center mb-6">
-      <button
-        class="btn btn-primary w-full"
-        @click="addTestNotification"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mr-2"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        Add Notification
-      </button>
     </div>
 
     <!-- Notifications List -->
     <div class="space-y-4">
       <div
-        v-if="!store.notifications.length"
+        v-if="!notifications.length"
         class="text-center py-8"
       >
         <div class="text-4xl mb-2">📬</div>
@@ -95,8 +67,7 @@ const clearNotification = async (id: string) => {
       </div>
 
       <div
-        v-for="notification in store.notifications"
-        v-else
+        v-for="notification in notifications"
         :key="notification.id"
         class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
       >
@@ -107,7 +78,7 @@ const clearNotification = async (id: string) => {
             </h3>
             <button
               class="btn btn-ghost btn-sm btn-circle"
-              @click="clearNotification(notification.id)"
+              @click="markAsRead(notification.id)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -140,24 +111,11 @@ const clearNotification = async (id: string) => {
               Priority {{ notification.priority }}
             </span>
             <span class="text-xs text-base-content/50">
-              {{ new Date().toLocaleDateString() }}
+              {{ new Date(notification.created_at).toLocaleString() }}
             </span>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Clear All Button (shown when there are notifications) -->
-    <div
-      v-if="store.notifications.length"
-      class="mt-6 flex justify-center"
-    >
-      <button
-        class="btn btn-ghost btn-sm"
-        @click="store.clearNotifications"
-      >
-        Clear All
-      </button>
     </div>
   </div>
 </template>
