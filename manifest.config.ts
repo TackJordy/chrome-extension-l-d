@@ -23,7 +23,7 @@ export default {
     default_popup: 'src/popup/index.html',
   },
   background: {
-    service_worker: 'src/background/index.ts',
+    service_worker: 'src/background/badge.ts',
     type: 'module',
   },
   content_scripts: [
@@ -42,7 +42,7 @@ export default {
   // },
   offline_enabled: true,
   // host_permissions: [],
-  permissions: ['storage', 'tabs', 'background'],
+  permissions: ['storage', 'tabs', 'background', 'storage'],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],

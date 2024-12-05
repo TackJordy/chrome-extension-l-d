@@ -1,13 +1,14 @@
 export const useBadge = () => {
-  const updateBadgeCount = (count: number) => {
+  const updateBadgeCount = (count: number, tabId?: number) => {
     chrome.runtime.sendMessage({
       type: 'UPDATE_BADGE',
-      count
+      count,
+      tabId
     });
   };
 
-  const clearBadge = () => {
-    updateBadgeCount(0);
+  const clearBadge = (tabId?: number) => {
+    updateBadgeCount(0, tabId);
   };
 
   return {

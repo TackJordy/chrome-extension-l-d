@@ -1,25 +1,45 @@
 import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
+import { computed } from 'vue'
+
+type StoredNotification = {
+  id: string
+  title: string
+  message: string
+  priority: 0 | 1 | 2
+}
 
 export const useAppStore = defineStore('app', () => {
-  const count = useStorage('count', 0)
-  const name = useStorage('name', 'John Doe')
+  const notifications = useStorage<StoredNotification[]>('notifications', [])
 
-  // You should probably use chrome.storage API instead of localStorage since localStorage history can be cleared by the user.
-  // See https://developer.chrome.com/docs/extensions/reference/api/storage
-
-  const increment = () => {
-    count.value++
+  // Add a new notification
+  const addNotification = async (notification: Omit<StoredNotification, 'id'>) => {
+    const id = crypto.randomUUID()
+    notifications.value.push({
+      ...notification,
+      id
+    })
+    return id
   }
 
-  const decrement = () => {
-    count.value--
+  // Remove a notification
+  const removeNotification = (id: string) => {
+    notifications.value = notifications.value.filter(n => n.id !== id)
   }
+
+  // Clear all notifications
+  const clearNotifications = () => {
+    notifications.value = []
+  }
+
+  // Get notification count
+  const count = computed(() => notifications.value.length)
 
   return {
-    count,
-    name,
-    increment,
-    decrement,
+    notifications,
+    addNotification,
+    removeNotification,
+    clearNotifications,
+    count
   }
 })

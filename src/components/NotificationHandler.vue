@@ -1,50 +1,49 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useBadge } from '../composables/useBadge';
-import { useNotifications } from '../composables/useNotifications';
+import { onMounted, watch } from 'vue'
+import { useBadge } from '../composables/useBadge'
+import { useNotifications } from '../composables/useNotifications'
+import { useAppStore } from '../stores/app.store'
 
-const { updateBadgeCount } = useBadge();
-const { showNotification, activeNotifications } = useNotifications();
+const store = useAppStore()
+const { updateBadgeCount } = useBadge()
+const { showNotification } = useNotifications()
 
-// Example: Store for pending notifications
-const pendingNotifications = ref<Array<{
-  id: string;
-  title: string;
-  message: string;
-  priority: 0 | 1 | 2;
-}>>([]);
+// Update badge when notifications change
+watch(() => store.count, (newCount) => {
+  updateBadgeCount(newCount)
+})
 
-// Watch pending notifications and update badge
-watch(() => pendingNotifications.value.length, (newCount) => {
-  updateBadgeCount(newCount);
-});
-
-// Example: Handle new notification
+// Handle new notification
 const handleNewNotification = async (
   title: string,
   message: string,
   priority: 0 | 1 | 2 = 1
 ) => {
-  // Show system notification
-  const notificationId = await showNotification(title, message, priority);
-  
-  // Add to pending notifications
-  pendingNotifications.value.push({
-    id: notificationId,
-    title,
-    message,
-    priority
-  });
-};
+  try {
+    await showNotification(title, message, priority)
+    await store.addNotification({ title, message, priority })
+  } catch (error) {
+    console.error('Error creating notification:', error)
+  }
+}
 
 const addTestNotification = () => {
-  const timestamp = new Date().toLocaleTimeString();
+  const timestamp = new Date().toLocaleTimeString()
   handleNewNotification(
     'Test Notification',
     `This is a test notification created at ${timestamp}`,
     1
-  );
-};
+  )
+}
+
+// Handle notification clearing
+const clearNotification = async (id: string) => {
+  try {
+    store.removeNotification(id)
+  } catch (error) {
+    console.error('Error clearing notification:', error)
+  }
+}
 </script>
 
 <template>
@@ -55,22 +54,26 @@ const addTestNotification = () => {
     <button 
       class="btn btn-primary"
       @click="addTestNotification"
+      :disabled="store.isLoading"
     >
       Add Test Notification
     </button>
 
+    <!-- Loading State -->
+    <div v-if="store.isLoading" class="loading loading-spinner"></div>
+
     <!-- Notifications Counter -->
-    <div v-if="pendingNotifications.length" class="badge badge-primary">
-      {{ pendingNotifications.length }} pending notifications
+    <div v-else-if="store.count" class="badge badge-primary">
+      {{ store.count }} pending notifications
     </div>
     <div v-else class="text-gray-500">
       No pending notifications
     </div>
 
     <!-- List of Current Notifications -->
-    <div v-if="pendingNotifications.length" class="flex flex-col gap-y-2">
+    <div v-if="store.notifications.length" class="flex flex-col gap-y-2">
       <div 
-        v-for="notification in pendingNotifications" 
+        v-for="notification in store.notifications" 
         :key="notification.id"
         class="card bg-base-200 shadow-sm"
       >
@@ -85,6 +88,12 @@ const addTestNotification = () => {
             }">
               Priority {{ notification.priority }}
             </span>
+            <button 
+              class="btn btn-sm btn-ghost"
+              @click="clearNotification(notification.id)"
+            >
+              Clear
+            </button>
           </div>
         </div>
       </div>

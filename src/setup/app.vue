@@ -23,18 +23,18 @@ function updateTitle() {
   }
 }
 
-const InstallComponent = defineAsyncComponent(
-  () => import('@/components/install.vue')
-)
-const UpdateComponent = defineAsyncComponent(
-  () => import('@/components/update.vue')
-)
+// const InstallComponent = defineAsyncComponent(
+//   () => import('@/components/install.vue')
+// )
+// const UpdateComponent = defineAsyncComponent(
+//   () => import('@/components/update.vue')
+// )
 
 const ComponentToRender = computed(() => {
-  if (setupType.value === 'update') {
-    return UpdateComponent
-  }
-  return InstallComponent
+  // if (setupType.value === 'update') {
+  //   return UpdateComponent
+  // }
+  // return InstallComponent
 })
 </script>
 
