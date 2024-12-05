@@ -9,9 +9,12 @@ const { updateBadgeCount } = useBadge()
 const { showNotification } = useNotifications()
 
 // Update badge when notifications change
-watch(() => store.count, (newCount) => {
-  updateBadgeCount(newCount)
-})
+watch(
+  () => store.count,
+  (newCount) => {
+    updateBadgeCount(newCount)
+  }
+)
 
 // Handle new notification
 const handleNewNotification = async (
@@ -47,56 +50,114 @@ const clearNotification = async (id: string) => {
 </script>
 
 <template>
-  <div class="text-center m-4 flex flex-col gap-y-4">
-    <h1 class="text-2xl font-bold">Notification Handler</h1>
-    
+  <div class="min-w-[350px] p-4 bg-base-100">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-primary">Notifications</h1>
+      <div
+        v-if="store.count"
+        class="badge badge-primary badge-lg"
+      >
+        {{ store.count }}
+      </div>
+    </div>
+
     <!-- Add Notification Button -->
-    <button 
-      class="btn btn-primary"
-      @click="addTestNotification"
-      :disabled="store.isLoading"
-    >
-      Add Test Notification
-    </button>
-
-    <!-- Loading State -->
-    <div v-if="store.isLoading" class="loading loading-spinner"></div>
-
-    <!-- Notifications Counter -->
-    <div v-else-if="store.count" class="badge badge-primary">
-      {{ store.count }} pending notifications
+    <div class="flex justify-center mb-6">
+      <button
+        class="btn btn-primary w-full"
+        @click="addTestNotification"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Add Notification
+      </button>
     </div>
-    <div v-else class="text-gray-500">
-      No pending notifications
-    </div>
 
-    <!-- List of Current Notifications -->
-    <div v-if="store.notifications.length" class="flex flex-col gap-y-2">
-      <div 
-        v-for="notification in store.notifications" 
+    <!-- Notifications List -->
+    <div class="space-y-4">
+      <div
+        v-if="!store.notifications.length"
+        class="text-center py-8"
+      >
+        <div class="text-4xl mb-2">📬</div>
+        <p class="text-base-content/60">No notifications yet</p>
+      </div>
+
+      <div
+        v-for="notification in store.notifications"
+        v-else
         :key="notification.id"
-        class="card bg-base-200 shadow-sm"
+        class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
       >
         <div class="card-body p-4">
-          <h3 class="card-title text-lg">{{ notification.title }}</h3>
-          <p class="text-sm">{{ notification.message }}</p>
-          <div class="card-actions justify-end">
-            <span class="badge badge-sm" :class="{
-              'badge-error': notification.priority === 2,
-              'badge-warning': notification.priority === 1,
-              'badge-info': notification.priority === 0
-            }">
-              Priority {{ notification.priority }}
-            </span>
-            <button 
-              class="btn btn-sm btn-ghost"
+          <div class="flex items-start justify-between">
+            <h3 class="card-title text-lg">
+              {{ notification.title }}
+            </h3>
+            <button
+              class="btn btn-ghost btn-sm btn-circle"
               @click="clearNotification(notification.id)"
             >
-              Clear
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
             </button>
+          </div>
+
+          <p class="text-sm text-base-content/70">
+            {{ notification.message }}
+          </p>
+
+          <div class="flex justify-between items-center mt-2">
+            <span
+              class="badge badge-sm"
+              :class="{
+                'badge-error': notification.priority === 2,
+                'badge-warning': notification.priority === 1,
+                'badge-info': notification.priority === 0,
+              }"
+            >
+              Priority {{ notification.priority }}
+            </span>
+            <span class="text-xs text-base-content/50">
+              {{ new Date().toLocaleDateString() }}
+            </span>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Clear All Button (shown when there are notifications) -->
+    <div
+      v-if="store.notifications.length"
+      class="mt-6 flex justify-center"
+    >
+      <button
+        class="btn btn-ghost btn-sm"
+        @click="store.clearNotifications"
+      >
+        Clear All
+      </button>
+    </div>
   </div>
-</template> 
+</template>

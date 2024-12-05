@@ -1,4 +1,4 @@
-type NotificationOptions = {
+interface NotificationOptions {
   title: string;
   message: string;
   icon?: string;
@@ -9,14 +9,15 @@ export const notificationService = {
   create: async ({ title, message, priority = 1 }: NotificationOptions) => {
     const notificationId = crypto.randomUUID();
     
-    // Send message to background script to create notification
-    chrome.runtime.sendMessage({
-      type: 'CREATE_NOTIFICATION',
+    await chrome.notifications.create(notificationId, {
+      type: 'basic',
+      iconUrl: chrome.runtime.getURL('src/assets/logo.png'),
       title,
       message,
       priority,
-      notificationId
-    });
+      requireInteraction: priority === 2,
+      buttons: [{ title: 'Keep it Flowing.' }],
+    })
 
     return notificationId;
   },

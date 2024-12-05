@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (chrome.notifications && chrome.notifications.create) {
       chrome.notifications.create({
         type: 'basic',
-        iconUrl: '/assets/logo.svg',
+        iconUrl: chrome.runtime.getURL('assets/logo.svg'),
         title,
         message: notificationMessage,
         priority,

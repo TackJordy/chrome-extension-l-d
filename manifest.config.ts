@@ -21,6 +21,11 @@ export default {
   // key: '',
   action: {
     default_popup: 'src/popup/index.html',
+    default_icon: {
+      16: 'src/assets/logo.png',
+      48: 'src/assets/logo.png',
+      128: 'src/assets/logo.png',
+    },
   },
   background: {
     service_worker: 'src/background/badge.ts',
@@ -42,7 +47,7 @@ export default {
   // },
   offline_enabled: true,
   // host_permissions: [],
-  permissions: ['storage', 'tabs', 'background', 'storage'],
+  permissions: ['storage', 'tabs', 'background', 'storage', 'notifications'],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],
@@ -52,11 +57,16 @@ export default {
       matches: ['*://*/*'],
       resources: ['src/content-script/iframe/index.html'],
     },
+    {
+      resources: ['src/assets/*'],
+      matches: ['<all_urls>'],
+    },
   ],
   icons: {
     16: 'src/assets/logo.png',
     24: 'src/assets/logo.png',
     32: 'src/assets/logo.png',
+    48: 'src/assets/logo.png',
     128: 'src/assets/logo.png',
   },
 } as ManifestV3Export
