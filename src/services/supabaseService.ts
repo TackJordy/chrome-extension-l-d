@@ -1,5 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Types for notification data
+export interface NotificationStats {
+  type: 'stats'
+  data: {
+    values: number[]
+    labels: string[]
+    change?: number
+    trend?: 'up' | 'down' | 'stable'
+  }
+}
+
+export interface NotificationChart {
+  type: 'chart'
+  data: {
+    type: 'line' | 'bar' | 'pie'
+    labels: string[]
+    datasets: {
+      label: string
+      data: number[]
+      backgroundColor?: string[]
+      borderColor?: string
+    }[]
+  }
+}
+
 // Types for notifications
 export interface Notification {
   id: string;
@@ -9,6 +34,7 @@ export interface Notification {
   priority: number;
   read: boolean;
   user_id?: string;
+  extra_data?: NotificationStats | NotificationChart;
 }
 
 class SupabaseService {
@@ -55,7 +81,7 @@ class SupabaseService {
   }
 
   // Create a notification
-  async createNotification(notification: Pick<Notification, 'title' | 'message' | 'priority'>): Promise<Notification> {
+  async createNotification(notification: Pick<Notification, 'title' | 'message' | 'priority' | 'extra_data'>): Promise<Notification> {
     try {
       const { data, error } = await this.supabase
         .from('notifications')
