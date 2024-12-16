@@ -10,7 +10,7 @@
   },
   "description": "A Vue 3 + Vite project for building Chrome extensions",
   "devDependencies": {
-    "@antfu/eslint-config": "^3.11.2",
+    "@antfu/eslint-config": "^3.12.0",
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
     "@iconify-json/fa-solid": "^1.2.0",
     "@iconify-json/heroicons-outline": "^1.2.0",
